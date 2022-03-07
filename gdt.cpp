@@ -13,13 +13,13 @@ GlobalDescriptorTable::GlobalDescriptorTable()
     }
 GlobalDescriptorTable::~GlobalDescriptorTable(){}
 
-uint16_t GlobalDescriptorTable::DataSegmentDescriptor(){
+uint16_t GlobalDescriptorTable::CodeSegmentSelector(){
     //this [[dataSegmentDescriptor]] this为低地址 <为什么用uint8_t?>
-    return (uint8_t*)&dataSegmentDescriptor - (uint8_t*)this;
+    return (uint8_t*)&codeSegmentDescriptor - (uint8_t*)this;
 }
 
-uint16_t GlobalDescriptorTable::CodeSegmentDescriptor(){
-    return (uint8_t*)&codeSegmentDescriptor - (uint8_t*)this;
+uint16_t GlobalDescriptorTable::DataSegmentSelector(){
+    return (uint8_t*)&dataSegmentDescriptor - (uint8_t*)this;
 }
 GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t type){
     uint8_t *target = (uint8_t*)this;

@@ -2,7 +2,7 @@ GCCPARAMS = -m32  -fno-use-cxa-atexit  -fno-leading-underscore -fno-exceptions  
 ASPPARAMS = --32
 LDPARAMS = -melf_i386
 
-objects = loader.o kernel.o gdt.o
+objects = loader.o kernel.o gdt.o interrupts.o interruptsubs.o
 
 %.o: %.cpp
 	g++ ${GCCPARAMS} -o $@ -c $<
