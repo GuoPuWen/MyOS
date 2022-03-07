@@ -1,10 +1,35 @@
 #include "gdt.h"
+#include "types.h"
 
-void printf(char *str){
-	short *monitor_io_memory=(short *)0xb8000;//注意！重点来啦！0xb8000内存地址是显示器地址，往这里写数据就直接能够输出到屏幕上
-	for(int i=0;str[i]!='\0';++i){
+void printf(const char *str){
+	uint16_t *monitor_io_memory = (uint16_t *)0xb8000;//注意！重点来啦！0xb8000内存地址是显示器地址，往这里写数据就直接能够输出到屏幕上
+	static uint8_t x = 0, y = 0;
+	for(int i=0; str[i]!='\0'; ++i){
 		//写入字符串，取或0xff00的意思是我们需要把屏幕高四位拉低，否则就是黑色的字体，黑色的字体黑色的屏幕是啥也看不到的
-		monitor_io_memory[i]=(monitor_io_memory[i] & 0xff00) | str[i];
+
+		switch (str[i]) {
+		case '\n':
+			x = 0;
+			y ++;
+			break;
+		default:
+			monitor_io_memory[80 * y + x]=(monitor_io_memory[i] & 0xff00) | str[i];
+			x++;
+			break;
+		}
+		if(x >= 80) {
+			x = 0;
+			y ++;
+		}
+		if(y >= 25){
+			for(y = 0;y < 25; y++){
+				for(x = 0;x < 80; x++){
+					monitor_io_memory[80 * y + x]=(monitor_io_memory[i] & 0xff00) | ' ';
+				}
+			}
+			x = 0;
+			y = 0;
+		}
 	}
 }
 //操作系统构造函数委托方法
@@ -22,7 +47,8 @@ extern "C" void system_constructors(){
 }
 
 extern "C" void kernelMain(const void* multboot_structure, unsigned int magicnumber) {
-    printf((char*)"hello world");
+    printf("hello world\n");
+	printf("hello world\n");
 	GlobalDescriptorTable gdt;
     while(1);
 }

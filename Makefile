@@ -30,6 +30,14 @@ mykernel.iso: mykernel.bin
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue -o $@ iso
 	rm -rf iso
+run: mykernel.iso
+	VBoxManage startvm MyOS
+clean:
+	rm -rf *.o
+	rm -rf *.out
+	rm -rf iso
+	rm -rf *.iso
+	rm -rf *.bin
 
 
 	
